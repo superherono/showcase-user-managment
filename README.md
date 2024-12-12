@@ -1,36 +1,97 @@
-# User Management Plugin
+# User Management Codebase
 
-This plugin is designed to manage custom user data and integrates advanced features such as QR code generation using the WordPress platform. It leverages `ACF` hooks and custom database table manipulation for streamlined operations.
+This codebase is designed to demonstrate an advanced user management system in WordPress, integrating features such as custom user tables, authentication using cookies, and QR code generation. It is intended as an example of robust back-end development in WordPress, utilizing best practices for database interactions, security, and extendability.
 
 ## Features
 
-- **Custom User Management:** Save and manage user data in a custom database table.
-- **QR Code Generation:** Generate QR codes for user-specific data using the `Endroid QR Code` library.
-- **ACF Integration:** Automatically handle data submissions from ACF forms.
+1. **Custom User Management**:
+   - Users are stored in a custom database table (`custom_users`).
+   - Includes functions to create, update, and delete users.
 
-## Installation
+2. **Email Notifications**:
+   - Automatically sends emails to users with credentials or recovery information.
+   - Tracks whether emails have been sent.
 
-1. Ensure WordPress is installed and configured.
-2. Upload the plugin files to the `wp-content/plugins/` directory.
-3. Activate the plugin from the WordPress dashboard.
+3. **QR Code Generation**:
+   - Generates QR codes for invite-based authentication.
+   - QR codes are stored in the WordPress media library.
 
-## Usage
+4. **Advanced Authentication**:
+   - Implements cookie-based authentication with token expiration.
+   - Handles invite link authentication with expiration checks.
 
-- **ACF Form Hook:** The plugin automatically processes `acf/save_post` actions for the `custom_post_type`.
-- **Database Table:** User data is stored in the `{wpdb_prefix}_custom_users` table.
-- **QR Code Path:** Generated QR codes are saved in the `wp-content/uploads/qrcodes/` directory.
+5. **Integration with Advanced Custom Fields (ACF)**:
+   - Manages user data and settings using ACF fields.
+   - Automatically processes and synchronizes ACF-based user lists.
 
-## Requirements
+6. **AJAX Support**:
+   - Includes AJAX handlers for user registration, login, and password recovery.
 
-- WordPress 5.0 or higher.
-- Advanced Custom Fields (ACF) plugin installed.
-- PHP 7.4 or higher.
+## Prerequisites
 
-## Configuration
+- **WordPress Environment**: Ensure WordPress is installed and configured.
+- **Advanced Custom Fields (ACF)**: Required for managing user data.
+- **PHP Extensions**: Ensure required PHP extensions, such as GD or Imagick for QR code generation, are installed.
 
-- Customize the table name or post type in the `userManagment` class.
-- Ensure the uploads directory has write permissions for saving QR codes.
+## How It Works
 
-## License
+### Core Functions
 
-This project is licensed under the MIT License.
+1. **User Management**:
+   - `addUserToAllowedUsers`: Adds a user to the ACF-managed allowed users list.
+   - `removeUserFromCustomTable`: Deletes a user from the custom database table.
+
+2. **Email Notifications**:
+   - `sendEmailToUser`: Sends an email to the user with credentials or recovery details.
+   - `isEmailSent`: Checks if an email has already been sent to a user.
+   - `markEmailAsSent`: Marks a user's email as sent in the ACF field.
+
+3. **QR Code Generation**:
+   - `generateAndSaveQrCode`: Creates and stores a QR code for invite links.
+   - `addImageToMediaLibrary`: Adds generated QR code images to the WordPress media library.
+
+4. **Authentication**:
+   - `setAuthCookie`: Sets an authentication cookie for a user.
+   - `handleInviteIdAuth`: Handles authentication via invite links.
+
+5. **ACF Integration**:
+   - `processAllowedUsersForm`: Processes changes to the allowed users list.
+   - `processAllowedUsersInvite`: Processes changes to the invite-based user list.
+
+### Workflow
+
+1. **User Registration**:
+   - Users submit a registration form via AJAX.
+   - User data is validated and stored in the custom database table.
+   - Credentials are sent to the user via email.
+
+2. **Invite-Based Authentication**:
+   - An invite link with an ID is sent to the user.
+   - Upon clicking the link, a QR code is generated and authenticated.
+   - Users are redirected to the appropriate page upon successful authentication.
+
+3. **User Management with ACF**:
+   - Admins manage allowed users via the ACF options page.
+   - The system synchronizes ACF data with the custom database table.
+
+## Code Highlights
+
+- **Security**:
+  - Sanitization of user inputs.
+  - Prepared statements for database queries.
+  - Secure token generation for cookies and invite links.
+
+- **Extendability**:
+  - Modular design with reusable private methods.
+  - Easy integration with other plugins or custom themes.
+
+- **Error Handling**:
+  - Exceptions are logged for critical processes like QR code generation.
+
+
+## Notes
+
+- This code is intended for demonstration purposes and may require adjustments for production use.
+- Always test thoroughly in a staging environment before deploying.
+
+
